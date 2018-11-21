@@ -26,6 +26,10 @@
 # -(well my friend, you should be
 # able to tell who said that ;) )
 
+
+# TODO: more comments
+
+
 #Dependencies
 import sys
 import json
