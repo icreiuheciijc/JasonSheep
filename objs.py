@@ -27,6 +27,13 @@ class cell:
         self.value_box['insertbackground']='#FFF'
         self.value_box.insert(0,value)
         self.value_box.pack(side='left',padx=10)
+        var=tk.StringVar(root)
+        var.set('String')
+        self.type_box=tk.OptionMenu(self.frame,var,*['String','Number','Boolean'])
+        self.type_box['bg']='#3F444E'
+        self.type_box['fg']='#000'
+        self.type_box.pack(side='left',padx=10)
+        self.type_box.config(width=10)
 
     def pack(self):
         self.frame.pack(fill='x',anchor='n',side='top')
