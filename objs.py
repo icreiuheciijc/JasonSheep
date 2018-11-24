@@ -19,10 +19,9 @@ class cell:
         self.frame.bind('<Button-1>',self.focus)
         self.frame.pack_propagate(False)
         self.key_box=tk.Entry(self.frame,bg='#1F242E',bd=0,fg='#EEE',relief='flat')
-        # Fitting all configs in the constructor makes the code
-        # ugly and fat like a poseidown, thus the index configs
 
-        # Right that was a terrible joke no one will ever get that reference
+        # Fitting all config in the constructor makes the code
+        # too long for my liking, thus the index configuration
         self.key_box['highlightthickness']=1
         self.key_box['insertbackground']='#FFF'
         self.key_box.insert(0,key)
