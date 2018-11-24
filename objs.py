@@ -68,14 +68,11 @@ class cell:
               'Float':lambda x:x.replace('.','',1).isdigit(),
               'Boolean':lambda x:x in ['true','false']}
         
-        new_types=[]
-        
-        for i in conv:
-            if conv[i](value): new_types.append(i)
+        new_types=[i for i in conv if conv[i](value)]
 
         if not conv[_type](value): self.type.set(new_types[-1])
         self.update_menu(new_types)      
-
+        
     def focus(self,event=None):
         self.frame.focus()
         self.validate()

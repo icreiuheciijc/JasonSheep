@@ -60,6 +60,14 @@ class main_gui:
         self.text_holder=tk.Frame(root,bd=0,bg='#21252C',width=self.size[0]/2)
         self.text_holder.bind('<Button-1>',self.remove_focus)
         self.text_holder.pack(fill='y',expand=True,anchor='e',side='right')
+        self.text=tk.Text(self.text_holder,bg='#21252C',fg='#FFF',width=int(self.size[0]/2))
+        self.text.config(font=('Courier',20))
+        self.text['padx']=20
+        self.text['pady']=20
+        self.text['spacing3']=5
+        self.text['highlightthickness']=0
+        self.text['insertbackground']='#FFF'
+        self.text.pack(fill='y',side='left')
 
         #Menu
         self.menu=tk.Menu(root)
@@ -78,13 +86,16 @@ class main_gui:
 
     def resize(self,event):
         self.size=(root.winfo_width(),root.winfo_height()*0.875)
-        self.cell_holder['width']=width=self.size[0]/2
-        self.text_holder['width']=width=self.size[0]/2
+        self.cell_holder['width']=self.size[0]/2
+        self.text_holder['width']=self.size[0]/2
+        self.cell_holder['height']=self.size[1]
+        self.text_holder['height']=self.size[1]
 
     def add_cell(self,key,value,path=[]):
-        self.cell_holder.pack_forget()
-        cell(self.cell_holder,1,1,path,self.compile,self.alert).pack()
-        self.cell_holder.pack(fill='y',expand=True,anchor='w',side='left')
+        for i in range(5):
+            self.cell_holder.pack_forget()
+            cell(self.cell_holder,1,1,path,self.compile,self.alert).pack()
+            self.cell_holder.pack(fill='y',expand=True,anchor='w',side='left')
 
     def load(self,js): # YES JS STANDS FOR JSON HERE NOT JAVASCRIPT USE YA COMMON SENSE!
         d=json.load(js)
