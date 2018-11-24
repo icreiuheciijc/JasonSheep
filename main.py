@@ -92,7 +92,7 @@ class main_gui:
         self.text_holder['height']=self.size[1]
 
     def add_cell(self,key,value,path=[]):
-        for i in range(5):
+        for i in range(3):
             self.cell_holder.pack_forget()
             cell(self.cell_holder,1,1,path,self.compile,self.alert).pack()
             self.cell_holder.pack(fill='y',expand=True,anchor='w',side='left')
