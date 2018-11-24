@@ -15,7 +15,6 @@ class cell:
         self.compiler=compiler
         self.path=path
         self.old_type='String'
-        self.old_value=value
         self.frame=tk.Frame(root,bg='#3F444E',height=50,width=100)
         self.frame.bind('<Button-1>',self.focus)
         self.frame.pack_propagate(False)
@@ -38,11 +37,12 @@ class cell:
         self.value_box.pack(side='left',padx=10)
         self.type=tk.StringVar(root)
         self.type.set('String')
-        self.type_box=tk.OptionMenu(self.frame,self.type,*['String','Integer','Float','Boolean'],command=self.focus)
+        self.type_box=tk.OptionMenu(self.frame,self.type,*['String'],command=self.focus)
         self.type_box['bg']='#3F444E'
         self.type_box['fg']='#000'
         self.type_box.pack(side='left',padx=10)
         self.type_box.config(width=10)
+        self.focus()
 
     def update_menu(self,opts):
         self.type_box['menu'].delete(0,'end')
@@ -55,26 +55,28 @@ class cell:
     def validate(self):
         value=self.value_box.get()
         _type=self.type.get()
-        conv={'String':str,'Integer':int,'Float':float,'Boolean':bool}
-        if _type not in ['List','Json']:
-            try:
+        if _type!=self.old_type: # Type change
+            self.old_type=_type
+            return # For now
+        
+        # Alright here goes
+        # Smart type conversion
+        # Spaghetti alert
+        
+        conv={'String':lambda x:True,
+              'Integer':lambda x:x.isdigit(),
+              'Float':lambda x:x.replace('.','',1).isdigit(),
+              'Boolean':lambda x:x in ['true','false']}
+        
+        new_types=[]
+        
+        for i in conv:
+            if conv[i](value): new_types.append(i)
 
-                # Someone go tell the dutch dude to implement a tryparse func
-                conv[_type](value)
-            except ValueError:
+        if not conv[_type](value): self.type.set(new_types[-1])
+        self.update_menu(new_types)      
 
-                self.alert('"%s" cannot be cast into type %s'%(value,_type))
-                self.type.set(self.old_type)
-
-                # Nope thers no way im setting a StringVar for this
-                # Spaghetti code but just roll w/ it
-                self.value_box.delete(0,'end')
-                self.value_box.insert(0,self.old_value)
-                return
-        self.old_type=_type
-        self.old_value=value
-
-    def focus(self,event):
+    def focus(self,event=None):
         self.frame.focus()
         self.validate()
         self.compiler()
