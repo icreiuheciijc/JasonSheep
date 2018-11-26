@@ -29,6 +29,7 @@ class cell:
         self.key_box.pack(side='left',padx=10)
         tk.Label(self.frame,text=':',bg='#3F444E',fg='#FFF').pack(side='left')
         self.value_box=tk.Entry(self.frame,bg='#1F242E',bd=0,fg='#EEE',relief='flat')
+        self.value_box['width']=20
         self.value_box['highlightthickness']=1
         self.value_box['insertbackground']='#FFF'
         self.value_box.insert(0,value)
