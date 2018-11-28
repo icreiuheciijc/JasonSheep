@@ -94,7 +94,7 @@ class main_gui:
     def add_cell(self,key,value,path=[]):
         for i in range(3):
             self.cell_holder.pack_forget()
-            cell(self.cell_holder,1,1,path,self.compile,self.alert).pack()
+            Cell(self.cell_holder,1,1,path,self.compile,self.alert).pack()
             self.cell_holder.pack(fill='y',expand=True,anchor='w',side='left')
 
     def load(self,js): # YES JS STANDS FOR JSON HERE NOT JAVASCRIPT USE YA COMMON SENSE!

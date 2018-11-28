@@ -7,21 +7,29 @@ import tkinter as tk
 
 # That was grammatically incorrect but lines up well
 
-class cell:
+class Cell:
 
     # Oh look a class that doesn't inherit anything from tkinter, how special!
     def __init__(self,root,key,value,path,compiler,alert):
         self.alert=alert
         self.compiler=compiler
         self.path=path
+        self.old_key_type='String'
         self.old_type='String'
         self.frame=tk.Frame(root,bg='#3F444E',height=50,width=100)
         self.frame.bind('<Button-1>',self.focus)
         self.frame.pack_propagate(False)
-        self.key_box=tk.Entry(self.frame,bg='#1F242E',bd=0,fg='#EEE',relief='flat')
 
         # Fitting all config in the constructor makes the code
         # too long for my liking, thus the index configuration
+        self.key_type=tk.StringVar(root)
+        self.key_type.set('String')
+        self.key_value_type_box=tk.OptionMenu(self.frame,self.key_type,*['String'],command=self.focus)
+        self.key_value_type_box['bg']='#3F444E'
+        self.key_value_type_box['fg']='#000'
+        self.key_value_type_box.pack(side='left',padx=10)
+        self.key_value_type_box.config(width=10)
+        self.key_box=tk.Entry(self.frame,bg='#1F242E',bd=0,fg='#EEE',relief='flat')
         self.key_box['highlightthickness']=1
         self.key_box['insertbackground']='#FFF'
         self.key_box.insert(0,key)
@@ -35,28 +43,41 @@ class cell:
         self.value_box.insert(0,value)
         self.value_box.bind('<FocusOut>',self.focus)
         self.value_box.pack(side='left',padx=10)
-        self.type=tk.StringVar(root)
-        self.type.set('String')
-        self.type_box=tk.OptionMenu(self.frame,self.type,*['String'],command=self.focus)
-        self.type_box['bg']='#3F444E'
-        self.type_box['fg']='#000'
-        self.type_box.pack(side='left',padx=10)
-        self.type_box.config(width=10)
+        self.value_type=tk.StringVar(root)
+        self.value_type.set('String')
+        self.value_type_box=tk.OptionMenu(self.frame,self.value_type,*['String'],command=self.focus)
+        self.value_type_box['bg']='#3F444E'
+        self.value_type_box['fg']='#000'
+        self.value_type_box.pack(side='left',padx=10)
+        self.value_type_box.config(width=10)
         self.focus()
 
-    def update_menu(self,opts):
-        self.type_box['menu'].delete(0,'end')
+    def update_menu(self,key_opts,opts):
+        self.key_value_type_box['menu'].delete(0,'end')
+        self.value_type_box['menu'].delete(0,'end')
+        for i in key_opts:
+            self.key_value_type_box['menu'].add_command(label=i,command=lambda x=i:self.click_menu(self.key_type,i))
         for i in opts:
-            self.type_box['menu'].add_command(label=i,command=lambda x=i:self.type.set(x))
+            self.value_type_box['menu'].add_command(label=i,command=lambda x=i:self.click_menu(self.value_type,i))
+
+    def click_menu(self,menu,value): # See this is why I don't like tkinter
+        self.focus()
+        menu.set(value)
 
     def pack(self):
         self.frame.pack(fill='x',anchor='n',side='top')
 
     def validate(self):
+        key=self.key_box.get()
+        key_type=self.key_type.get()
         value=self.value_box.get()
-        _type=self.type.get()
+        _type=self.value_type.get()
         if _type!=self.old_type: # Type change
             self.old_type=_type
+            return # For now
+
+        if key_type!=self.old_key_type: # Type change
+            self.old_key_type=key_type
             return # For now
         
         # Alright here goes
@@ -67,11 +88,27 @@ class cell:
               'Integer':lambda x:x.isdigit(),
               'Float':lambda x:x.replace('.','',1).isdigit(),
               'Boolean':lambda x:x in ['true','false']}
-        
+
+        new_key_types=[i for i in conv if conv[i](key)]
         new_types=[i for i in conv if conv[i](value)]
 
-        if not conv[_type](value): self.type.set(new_types[-1])
-        self.update_menu(new_types)      
+        print(key_type)
+        if not conv[key_type](key):
+            self.key_type.set(new_key_types[-1])
+        if not conv[_type](value): self.value_type.set(new_types[-1])
+        self.update_menu(new_key_types,new_types)
+
+    def get_value(self):
+        conv={'String':lambda x:str(x),
+              'Integer':lambda x:int(x),
+              'Float':lambda x:float(x),
+              'Boolean':lambda x:bool(x),
+              'Array':lambda x:[],
+              'Json':lambda x:{}}
+
+        _type=self.type_box.get()
+        value=self.value_box.get()
+        return [_type,conv[_type](value)]
         
     def focus(self,event=None):
         self.frame.focus()
